@@ -5,6 +5,8 @@
 // Copyright (c) 2012 Kevin D. Conley (kcon at stanford dot edu)
 // Based on icmp_header.hpp (c) 2003-2010 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
+// Fixed by Dudnik P.A. 2021
+//
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -36,44 +38,51 @@
 class udp_header
 {
 public:
-  udp_header() { std::fill(rep_, rep_ + sizeof(rep_), 0); }
+    udp_header() { std::fill(rep_, rep_ + sizeof(rep_), 0); }
 
-  unsigned char source_port() const { return decode(0, 1); }
-  unsigned char destination_port() const { return decode(2, 3); }
-  unsigned short length() const { return decode(4, 5); }
-  unsigned short checksum() const { return decode(6, 7); }
+    unsigned char source_port() const { return decode(0, 1); }
+    unsigned char destination_port() const { return decode(2, 3); }
+    unsigned char length() const { return decode(4, 5); }
+    unsigned char checksum() const { return decode(6, 7); }
 
-  void source_port(unsigned short n) { encode(0, 1, n); }
-  void destination_port(unsigned short n) { encode(2, 3, n); }
-  void length(unsigned short n) { encode(4, 5, n); }
-  void checksum(unsigned short n) { encode(6, 7, n); }
+    void source_port(unsigned char n) { encode(0, 1, n); }
+    void destination_port(unsigned char n) { encode(2, 3, n); }
+    void length(unsigned char n) { encode(4, 5, n); }
+    void checksum(unsigned char n) { encode(6, 7, n); }
 
-  void to_string() 
-  {
-    unsigned int i;
-    printf("{");
-    for (i = 0; i < sizeof(rep_); i++) {
-      printf(i == sizeof(rep_) - 1 ? "%.2X}\n" : "%.2X, ", rep_[i]);
+    void to_string()
+    {
+        unsigned int i;
+        printf("{");
+        for (i = 0; i < sizeof(rep_); i++)
+        {
+            printf(i == sizeof(rep_) - 1 ? "%.2X}\n" : "%.2X, ", rep_[i]);
+        }
     }
-  }
 
-  friend std::istream& operator>>(std::istream& is, udp_header& header)
-    { return is.read(reinterpret_cast<char*>(header.rep_), 8); }
+    friend std::istream &operator>>(std::istream &is, udp_header &header)
+    {
+        return is.read(reinterpret_cast<char *>(header.rep_), 8);
+    }
 
-  friend std::ostream& operator<<(std::ostream& os, const udp_header& header)
-    { return os.write(reinterpret_cast<const char*>(header.rep_), 8); }
+    friend std::ostream &operator<<(std::ostream &os, const udp_header &header)
+    {
+        return os.write(reinterpret_cast<const char *>(header.rep_), 8);
+    }
 
 private:
-  unsigned short decode(int a, int b) const
-    { return (rep_[a] << 8) + rep_[b]; }
+    unsigned char decode(int a, int b) const
+    {
+        return (rep_[a] << 8) + rep_[b];
+    }
 
-  void encode(int a, int b, unsigned short n)
-  {
-    rep_[a] = static_cast<unsigned char>(n >> 8);
-    rep_[b] = static_cast<unsigned char>(n & 0xFF);
-  }
+    void encode(int a, int b, unsigned char n)
+    {
+        rep_[a] = static_cast<unsigned char>(n >> 8);
+        rep_[b] = static_cast<unsigned char>(n & 0xFF);
+    }
 
-  unsigned char rep_[8];
+    unsigned char rep_[8];
 };
 
 #endif // UDP_HEADER_HPP

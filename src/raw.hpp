@@ -3,17 +3,14 @@
 // ~~~~~~~~~~~~~~~
 //
 // Copyright (c) 2012 Kevin D. Conley (kcon at stanford dot edu)
+// 
+// Fixed by Dudnik P.A. 2021
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#ifndef RAW_HPP
-#define RAW_HPP
-
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
-# pragma once
-#endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
+#pragma once
 
 #include <boost/asio/detail/config.hpp>
 #include <boost/asio/detail/socket_types.hpp>
@@ -25,83 +22,82 @@
 
 #include <boost/asio/detail/push_options.hpp>
 
-namespace asio {
-namespace ip {
-
-class raw
+namespace asio
 {
-public:
-  /// The type of a RAW endpoint.
-  typedef boost::asio::ip::basic_endpoint<raw> endpoint;
+    namespace ip
+    {
 
-  /// Construct to represent the IPv4 RAW protocol.
-  static raw v4()
-  {
-    return raw(IPPROTO_UDP, PF_INET);
-  }
+        class raw
+        {
+        public:
+            /// The type of a RAW endpoint.
+            typedef boost::asio::ip::basic_endpoint<raw> endpoint;
 
-  /// Construct to represent the IPv6 RAW protocol.
-  static raw v6()
-  {
-    return raw(IPPROTO_UDP, PF_INET6);
-  }
+            /// Construct to represent the IPv4 RAW protocol.
+            static raw v4()
+            {
+                return raw(IPPROTO_UDP, PF_INET);
+            }
 
-  // Default construction, compiler complains otherwise
-  explicit raw()
-    : protocol_(IPPROTO_UDP),
-      family_(PF_INET)
-  {
-  }
+            /// Construct to represent the IPv6 RAW protocol.
+            static raw v6()
+            {
+                return raw(IPPROTO_UDP, PF_INET6);
+            }
 
-  /// Obtain an identifier for the type of the protocol.
-  int type() const
-  {
-    return SOCK_RAW;
-  }
+            // Default construction, compiler complains otherwise
+            explicit raw()
+                : protocol_(IPPROTO_UDP),
+                  family_(PF_INET)
+            {
+            }
 
-  /// Obtain an identifier for the protocol.
-  int protocol() const
-  {
-    return protocol_;
-  }
+            /// Obtain an identifier for the type of the protocol.
+            int type() const
+            {
+                return SOCK_RAW;
+            }
 
-  /// Obtain an identifier for the protocol family.
-  int family() const
-  {
-    return family_;
-  }
+            /// Obtain an identifier for the protocol.
+            int protocol() const
+            {
+                return protocol_;
+            }
 
-  /// The RAW socket type.
-  typedef boost::asio::basic_raw_socket<raw> socket;
+            /// Obtain an identifier for the protocol family.
+            int family() const
+            {
+                return family_;
+            }
 
-  /// The RAW resolver type.
-  typedef boost::asio::ip::basic_resolver<raw> resolver;
+            /// The RAW socket type.
+            typedef boost::asio::basic_raw_socket<raw> socket;
 
-  /// Compare two protocols for equality.
-  friend bool operator==(const raw& p1, const raw& p2)
-  {
-    return p1.protocol_ == p2.protocol_ && p1.family_ == p2.family_;
-  }
+            /// The RAW resolver type.
+            typedef boost::asio::ip::basic_resolver<raw> resolver;
 
-  /// Compare two protocols for inequality.
-  friend bool operator!=(const raw& p1, const raw& p2)
-  {
-    return p1.protocol_ != p2.protocol_ || p1.family_ != p2.family_;
-  }
+            /// Compare two protocols for equality.
+            friend bool operator==(const raw &p1, const raw &p2)
+            {
+                return p1.protocol_ == p2.protocol_ && p1.family_ == p2.family_;
+            }
 
-private:
-  explicit raw(int protocol_id, int protocol_family)
-    : protocol_(protocol_id),
-      family_(protocol_family)
-  {
-  }
+            /// Compare two protocols for inequality.
+            friend bool operator!=(const raw &p1, const raw &p2)
+            {
+                return p1.protocol_ != p2.protocol_ || p1.family_ != p2.family_;
+            }
 
-  int protocol_;
-  int family_;
-};
+        private:
+            explicit raw(int protocol_id, int protocol_family)
+                : protocol_(protocol_id),
+                  family_(protocol_family)
+            {
+            }
 
-} // namespace ip
+            int protocol_;
+            int family_;
+        };
+
+    } // namespace ip
 } // namespace asio
-
-
-#endif // RAW_HPP

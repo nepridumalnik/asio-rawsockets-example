@@ -4,6 +4,8 @@
 //
 // Copyright (c) 2012 Kevin D. Conley (kcon at stanford dot edu)
 //
+// Fixed by Dudnik P.A. 2021
+//
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -21,7 +23,8 @@
 #include "udp_header.hpp"
 #include "raw.hpp"
 
-int main() {
+int main()
+{
 	udp_header udph;
 	udph.source_port(23);
 	udph.destination_port(23);
@@ -32,22 +35,25 @@ int main() {
 
 	std::string body("---"); //create a small data payload
 
-    boost::asio::io_service io_service;
+	boost::asio::io_service io_service;
 
-    boost::asio::basic_raw_socket<asio::ip::raw> socket_(io_service);
+	boost::asio::basic_raw_socket<asio::ip::raw> socket_(io_service);
 
-    boost::asio::streambuf request_buffer;
+	boost::asio::streambuf request_buffer;
 	std::ostream os(&request_buffer);
 	os << udph << body;
 
-    boost::asio::ip::address_v4::bytes_type b = {{127, 0, 0, 1}};
+	boost::asio::ip::address_v4::bytes_type b = {{127, 0, 0, 1}};
 
-    asio::ip::raw::endpoint ep(boost::asio::ip::address_v4(b), 23);
+	asio::ip::raw::endpoint ep(boost::asio::ip::address_v4(b), 23);
 
-	try {
+	try
+	{
 		socket_.open();
 		socket_.send_to(request_buffer.data(), ep);
-	} catch (std::exception& e) {
+	}
+	catch (std::exception &e)
+	{
 		std::cerr << "Error: " << e.what() << std::endl;
 	}
 }
